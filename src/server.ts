@@ -115,8 +115,7 @@ export class Server {
   }
 
   private initFirebase():firebase.app.App{
-    var serviceAccount = require("../dayvulgeAdminKey.json");
-
+    let serviceAccount =  require("../dayvulgeAdminKey.json");
     return firebase.initializeApp({
       credential: firebase.credential.cert(serviceAccount),
       databaseURL: 'https://dayvulge-27f09.firebaseio.com'
