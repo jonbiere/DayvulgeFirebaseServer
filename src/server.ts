@@ -3,8 +3,11 @@ import * as cookieParser from "cookie-parser";
 import * as express from "express";
 import * as logger from "morgan";
 import * as path from "path";
+import * as firebase from "firebase-admin";
 import errorHandler = require("errorhandler");
 import methodOverride = require("method-override");
+import {Scheduler} from './scheduler';
+import {DbListner} from './dbListner';
 
 import { IndexRoute } from "./routes/index";
 
@@ -98,8 +101,27 @@ export class Server {
 
     //error handling
     this.app.use(errorHandler());
+
+    //initialize firebase
+    let firebaseApp = this.initFirebase();
+
+    //start up scheduled jobs
+    let firebaseScheduler = new Scheduler(firebaseApp);
+    firebaseScheduler.start();
+
+    //start up firebase event listening
+    let dbListner = new DbListner(firebaseApp);
+    dbListner.listen();
   }
 
+  private initFirebase():firebase.app.App{
+    var serviceAccount = require("../dayvulgeAdminKey.json");
+
+    return firebase.initializeApp({
+      credential: firebase.credential.cert(serviceAccount),
+      databaseURL: 'https://dayvulge-27f09.firebaseio.com'
+    });
+  }
   /**
    * Create and return Router.
    *
