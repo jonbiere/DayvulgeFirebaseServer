@@ -1,5 +1,6 @@
 import * as firebase from "firebase-admin";
 import * as cron from "cron";
+import * as logger from "winston";
 //import {vulgeWinner} from './jobs';
 
 
@@ -13,7 +14,7 @@ export class Scheduler {
         //start jobs here
 
         let vulgeWinnerJob = new cron.CronJob({
-            cronTime: '5 * * * * *',
+            cronTime: '0 */5 * * * *',
             onTick: () => { this.vulgeWinner() },
             start: false,
             timeZone: 'America/Chicago'
@@ -23,7 +24,7 @@ export class Scheduler {
     }
 
     vulgeWinner() {
-        console.log(`Job Ticked at ${new Date().toString()}`);
+        logger.info(`Job Ticked at ${new Date().toString()}`);
 
         let firebaseDb = this.firebase.database();
 
@@ -47,18 +48,28 @@ export class Scheduler {
                     //determine winner
                     //TODO handle tie breakers
                     firebaseDb.ref(`/vulgeCollections/${triggeredKey}/vulges`).orderByChild('votes').limitToLast(1).once('value', dataSnapshot => {
+                        let winnerObj:any
                         if (dataSnapshot.exists() && dataSnapshot.hasChildren()) {
-                            let winner = dataSnapshot.val();
-                            let key = Object.keys(winner)[0];
+                            winnerObj = dataSnapshot.val();
+                            let key = Object.keys(winnerObj)[0];
 
-                            console.log(`Winner: ${JSON.stringify(winner)}`);
+                            logger.info(`Winner: ${JSON.stringify(winnerObj)}`);                          
+                            firebaseDb.ref(`/winners/${key}`).set(winnerObj[key]);
+                            firebaseDb.ref('/activeWinner').set(winnerObj[key]);
 
-                            let winnerCollection = this.firebase.database().ref(`/winners/${key}`);
-                            winnerCollection.set(winner[key]);
                         }
                         else{
-                            //TODO handle no vulges made for the day
+                            winnerObj = {
+                                createdDate: firebase.database['ServerValue']['TIMESTAMP'],
+                                vulgeText: 'Today will not be remembered....',
+                                userName: 'Nobody',
+                                userKey: null
+                            }
+                            firebaseDb.ref(`/winners/`).push(winnerObj);
+                            firebaseDb.ref('/activeWinner').set(winnerObj);
                         }
+                        
+                        
                     });
                 });
 

@@ -1,13 +1,13 @@
 import * as bodyParser from "body-parser";
 import * as cookieParser from "cookie-parser";
 import * as express from "express";
-import * as logger from "morgan";
 import * as path from "path";
 import * as firebase from "firebase-admin";
 import errorHandler = require("errorhandler");
 import methodOverride = require("method-override");
 import {Scheduler} from './scheduler';
 import {DbListner} from './dbListner';
+import {logger} from './logger'
 
 import { IndexRoute } from "./routes/index";
 
@@ -76,9 +76,6 @@ export class Server {
     this.app.set("views", path.join(__dirname, "views"));
     this.app.set("view engine", "pug");
 
-    //mount logger
-    this.app.use(logger("dev"));
-
     //mount json form parser
     this.app.use(bodyParser.json());
 
@@ -88,7 +85,7 @@ export class Server {
     }));
 
     //mount cookie parker
-    this.app.use(cookieParser("SECRET_GOES_HERE"));
+    //this.app.use(cookieParser("SECRET_GOES_HERE"));
 
     //mount override?
     this.app.use(methodOverride());
