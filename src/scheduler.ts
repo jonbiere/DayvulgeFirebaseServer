@@ -1,6 +1,6 @@
 import * as firebase from "firebase-admin";
 import * as cron from "cron";
-import * as logger from "winston";
+import {logger} from './logger'
 //import {vulgeWinner} from './jobs';
 
 

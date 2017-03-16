@@ -5,11 +5,11 @@ import * as path from "path";
 import * as firebase from "firebase-admin";
 import errorHandler = require("errorhandler");
 import methodOverride = require("method-override");
-import {Scheduler} from './scheduler';
-import {DbListner} from './dbListner';
-import {logger} from './logger'
+import { Scheduler } from './scheduler';
+import { DbListner } from './dbListner';
+import { logger } from './logger'
 
-import { IndexRoute } from "./routes/index";
+import { IndexRoute, VoteRoute } from "./routes";
 
 /**
  * The server.
@@ -19,6 +19,7 @@ import { IndexRoute } from "./routes/index";
 export class Server {
 
   public app: express.Application;
+  private firebase: firebase.app.App;
 
   /**
    * Bootstrap the application.
@@ -46,7 +47,7 @@ export class Server {
     this.config();
 
     //add routes
-    this.routes();
+    //this.routes();
 
     //add api
     this.api();
@@ -59,7 +60,16 @@ export class Server {
    * @method api
    */
   public api() {
-    //empty for now
+    let router: express.Router;
+    router = express.Router();
+    //router.options.
+    //IndexRoute
+    IndexRoute.create(router);
+    VoteRoute.create(router, this.firebase);
+
+
+    //use router middleware
+    this.app.use('/api', router);
   }
 
   /**
@@ -91,28 +101,29 @@ export class Server {
     this.app.use(methodOverride());
 
     // catch 404 and forward to error handler
-    this.app.use(function(err: any, req: express.Request, res: express.Response, next: express.NextFunction) {
-        err.status = 404;
-        next(err);
+    this.app.use(function (err: any, req: express.Request, res: express.Response, next: express.NextFunction) {
+      err.status = 404;
+      next(err);
     });
 
     //error handling
     this.app.use(errorHandler());
 
     //initialize firebase
-    let firebaseApp = this.initFirebase();
+    this.firebase = this.initFirebase();
 
     //start up scheduled jobs
-    let firebaseScheduler = new Scheduler(firebaseApp);
+    let firebaseScheduler = new Scheduler(this.firebase);
     firebaseScheduler.start();
 
     //start up firebase event listening
-    let dbListner = new DbListner(firebaseApp);
-    dbListner.listen();
+    let dbListner = new DbListner(this.firebase);
+    dbListner.listen();     
   }
 
-  private initFirebase():firebase.app.App{
-    let serviceAccount =  require("../dayvulgeAdminKey.json");
+  private initFirebase(): firebase.app.App {
+    logger.debug("Initializing firebase...")
+    let serviceAccount = require("../dayvulgeAdminKey.json");
     return firebase.initializeApp({
       credential: firebase.credential.cert(serviceAccount),
       databaseURL: 'https://dayvulge-27f09.firebaseio.com'
@@ -126,14 +137,7 @@ export class Server {
    * @return void
    */
   private routes() {
-    let router: express.Router;
-    router = express.Router();
-
-    //IndexRoute
-    IndexRoute.create(router);
-
-    //use router middleware
-    this.app.use(router);
+    //empty for now. use seperate view router if desired.
   }
 
 }
