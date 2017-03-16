@@ -12,6 +12,8 @@ var app = server.Server.bootstrap().app;
 app.set("port", httpPort);
 var httpServer = http.createServer(app);
 
+logger.info("NODE_ENV: "+process.env.NODE_ENV);
+
 //listen on provided ports
 httpServer.listen(httpPort);
 

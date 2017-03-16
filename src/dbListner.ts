@@ -28,8 +28,7 @@ export class DbListner{
                 if(listners && listners.length){
                     logger.info(`Turning Off DbListners`);
                     listners.forEach(dbRef => {
-                       dbRef.off();
-                       
+                       dbRef.off();                     
                     });
                 }
             }

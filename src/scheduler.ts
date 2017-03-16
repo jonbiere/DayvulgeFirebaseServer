@@ -36,15 +36,7 @@ export class Scheduler {
                 isActive: false
             }).then(() => {
                 //clear active key
-               firebaseDb.ref('/activeCollection').set(null).then(() => {
-                    //generate new vulgeCollections key
-                    let freshRef = firebaseDb.ref('/activeCollection').push(0);
-                    firebaseDb.ref(`/vulgeCollections/${freshRef.key}`).set({
-                        date: firebase.database['ServerValue']['TIMESTAMP'],
-                        isActive: true
-                    })
-                    
-
+               firebaseDb.ref('/activeCollection').set(null).then(() => {                                  
                     //determine winner
                     //TODO handle tie breakers
                     firebaseDb.ref(`/vulgeCollections/${triggeredKey}/vulges`).orderByChild('votes').limitToLast(1).once('value', dataSnapshot => {
@@ -69,6 +61,12 @@ export class Scheduler {
                             firebaseDb.ref('/activeWinner').set(winnerObj);
                         }
                         
+                        //generate new vulgeCollections key
+                        let freshRef = firebaseDb.ref('/activeCollection').push(0);
+                        firebaseDb.ref(`/vulgeCollections/${freshRef.key}`).set({
+                            date: firebase.database['ServerValue']['TIMESTAMP'],
+                            isActive: true
+                        });
                         
                     });
                 });

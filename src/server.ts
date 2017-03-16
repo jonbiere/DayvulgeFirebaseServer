@@ -8,6 +8,7 @@ import methodOverride = require("method-override");
 import { Scheduler } from './scheduler';
 import { DbListner } from './dbListner';
 import { logger } from './logger'
+import * as cors from "cors";
 
 import { IndexRoute, VoteRoute } from "./routes";
 
@@ -79,6 +80,19 @@ export class Server {
    * @method config
    */
   public config() {
+    //setup cors
+    let originsWhiteList = [
+      'http://localhost:3000'
+    ];
+
+    let corsOption: cors.CorsOptions = {
+      origin: (origin, callback) => {
+        callback(null, originsWhiteList.indexOf(origin) !== -1)
+      },
+      credentials: true
+    }
+    this.app.use(cors(corsOption));
+
     //add static paths
     this.app.use(express.static(path.join(__dirname, "public")));
 
@@ -118,7 +132,7 @@ export class Server {
 
     //start up firebase event listening
     let dbListner = new DbListner(this.firebase);
-    dbListner.listen();     
+    dbListner.listen();
   }
 
   private initFirebase(): firebase.app.App {
