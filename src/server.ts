@@ -83,7 +83,8 @@ export class Server {
     //setup cors
     let originsWhiteList = [
       'http://localhost:3000',
-      'https://dayvulge-27f09.firebaseapp.com'
+      'https://dev.dayvulge.com'
+      //'https://dayvulge-27f09.firebaseapp.com'
     ];
 
     let corsOption: cors.CorsOptions = {
