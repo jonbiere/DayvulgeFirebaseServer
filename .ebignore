@@ -4,8 +4,8 @@
 node_modules
 
 # EB Ignore Only
-src
-views
+/src
+/views
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
