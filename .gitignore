@@ -1,6 +1,15 @@
 .vscode
 .tscache
 .baseDir.ts
-dist
 node_modules
 dayvulgeAdminKey.json
+
+
+# Elastic Beanstalk Files
+
+.elasticbeanstalk/*
+
+!.elasticbeanstalk/*.cfg.yml
+
+!.elasticbeanstalk/*.global.yml
+
