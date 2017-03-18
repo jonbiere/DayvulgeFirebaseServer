@@ -6,7 +6,7 @@
   "author": "Jon Biere",
   "scripts": {
     "grunt": "grunt",
-    "start": "npm run grunt && set NODE_ENV=DEV && node ./bin/www"
+    "start": "node ./bin/www"
   },
   "dependencies": {
     "body-parser": "^1.15.2",
