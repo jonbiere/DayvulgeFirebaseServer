@@ -3,9 +3,9 @@
 .baseDir.ts
 node_modules
 
-# Git Ignore Only
-dayvulgeAdminKey.json
-dist
+# EB Ignore Only
+src
+views
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
