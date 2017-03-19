@@ -115,7 +115,7 @@ export class VoteRoute extends BaseRoute {
     firebaseDb.ref(`/userObjs/userVulgesVotes/${vulge.val().userKey}/${vulge.key}`).push({
       userKey: currentUserObj.uid,
       voteUp: up,
-      profilePic: currentUserObj.photoURL || ""
+      photoURL: currentUserObj.photoURL
     });
   }
 
@@ -136,7 +136,7 @@ export class VoteRoute extends BaseRoute {
         let vulgeData = vulge.val();
         firebaseDb.ref(`/userObjs/userVotes/${currentUserObj.uid}/${vulge.key}`).set({
           vulgeUserName: vulgeData.userName,
-          profilePic: "",
+          photoURL: vulgeData.photoURL,
           vulgeText: vulgeData.vulgeText,
           voteDate: firebase.database.ServerValue.TIMESTAMP,
           numUpVotes: up ? 1 : 0,
