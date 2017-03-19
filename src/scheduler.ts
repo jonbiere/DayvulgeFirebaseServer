@@ -14,7 +14,7 @@ export class Scheduler {
         //start jobs here
 
         let vulgeWinnerJob = new cron.CronJob({
-            cronTime: '0 */5 * * * *',
+            cronTime: '0 */15 * * * *',
             onTick: () => { this.vulgeWinner() },
             start: false,
             timeZone: 'America/Chicago'
