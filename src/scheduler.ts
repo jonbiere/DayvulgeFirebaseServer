@@ -15,14 +15,14 @@ export class Scheduler {
     public start() {
         //start jobs here
 
-        let vulgeWinnerJob = new cron.CronJob({
+        let vulgeWinnerCronJob = new cron.CronJob({
             cronTime: '0 */15 * * * *',
             onTick: () => { this.vulgeWinnerJob() },
             start: false,
             timeZone: 'America/Chicago'
         })
 
-        vulgeWinnerJob.start();
+        //vulgeWinnerCronJob.start();
     }
 
     vulgeWinnerJob() {
