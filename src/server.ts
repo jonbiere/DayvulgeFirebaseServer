@@ -127,14 +127,10 @@ export class Server {
 
     //initialize firebase
     this.firebase = this.initFirebase();
-
+    
     //start up scheduled jobs
     let firebaseScheduler = new Scheduler(this.firebase);
-    firebaseScheduler.start();
-
-    //start up firebase event listening
-    let dbListner = new DbListner(this.firebase);
-    dbListner.listen();
+    firebaseScheduler.start();  
   }
 
   private initFirebase(): firebase.app.App {

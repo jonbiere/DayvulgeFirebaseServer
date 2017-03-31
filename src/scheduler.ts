@@ -1,15 +1,21 @@
 import * as firebase from "firebase-admin";
 import * as cron from "cron";
 import { logger } from './logger'
+import {DbListner} from './dbListner';
 //import {vulgeWinner} from './jobs';
 
 
 export class Scheduler {
     firebase: firebase.app.App;
     firebaseDb: firebase.database.Database;
+    dbListner: DbListner;
     constructor(firebase: firebase.app.App) {
         this.firebase = firebase;
         this.firebaseDb = this.firebase.database();
+        
+        //start up firebase event listening
+        this.dbListner = new DbListner(this.firebase);
+    
     }
 
     public start() {
@@ -23,6 +29,7 @@ export class Scheduler {
         })
 
         //vulgeWinnerCronJob.start();
+        this.dbListner.listen();
     }
 
     vulgeWinnerJob() {
@@ -38,6 +45,7 @@ export class Scheduler {
             }).then(() => {
                 //clear active key
                 activeCollectionRef.set(null).then(() => {
+                     this.dbListner.turnOff();
                     this.findWinningVulge(triggeredKey);
                 });
             })
@@ -111,6 +119,8 @@ export class Scheduler {
         this.firebaseDb.ref(`/vulgeCollections/${freshRef.key}`).set({
             date: firebase.database['ServerValue']['TIMESTAMP'],
             isActive: true
+        }).then(() =>{
+            this.dbListner.listen();
         });
     }
 }

@@ -76,8 +76,11 @@ export class VoteRoute extends BaseRoute {
                           votes: --profile.votes
                         })
                         let up = this.req.body.up;
-                        vulgeRef.update({
-                          votes: up ? ++vulge.val().votes : --vulge.val().votes
+                        vulgeRef.transaction(vulge => {
+                          if(vulge && (vulge.votes || vulge.votes === 0) ){                        
+                              up ? ++vulge.votes : --vulge.votes;                         
+                          }
+                          return vulge;
                         });
                         this.registerVulgeVote(firebaseDb, vulge, currentUserObj, up);
                         this.registerUserVote(firebaseDb, vulge, currentUserObj, up);
