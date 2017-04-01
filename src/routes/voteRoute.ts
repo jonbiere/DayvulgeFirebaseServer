@@ -77,8 +77,15 @@ export class VoteRoute extends BaseRoute {
                         })
                         let up = this.req.body.up;
                         vulgeRef.transaction(vulge => {
-                          if(vulge && (vulge.votes || vulge.votes === 0) ){                        
-                              up ? ++vulge.votes : --vulge.votes;                         
+                          if(vulge){
+                            if(up){
+                              vulge.upVotes++;
+                              vulge.voteOrder--;
+                            }
+                            else{
+                              vulge.downVotes++;
+                              vulge.voteOrder++;
+                            }                       
                           }
                           return vulge;
                         });

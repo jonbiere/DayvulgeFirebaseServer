@@ -5,9 +5,11 @@ export class DbListner{
     firebase:firebase.app.App;
     listners:Array<firebase.database.Reference>;
     isListening:boolean;
+    internalCount:number;
     constructor(firebase:firebase.app.App){
         this.firebase = firebase;
         this.isListening = false;
+        this.internalCount = 0;
     }
 
     public listen(){
@@ -26,9 +28,11 @@ export class DbListner{
                     
                     let countRef = activeCollectionRef.child(`${collectionKey}`);
                     vulgeCollectionRef.on('child_added', dataSnapshot =>{
-                        logger.debug(`Vulges created for collection: ${collectionKey}`);
+                        this.internalCount++;
+                        logger.debug(`Vulges created for collection: ${collectionKey}: ${this.internalCount}`);
                         countRef.transaction(count =>{
                             if(count || count === 0){
+                               
                                 count++;
                             }
                             return count;
@@ -47,6 +51,7 @@ export class DbListner{
 
     turnOff(){
         this.isListening = false;
+        this.internalCount = 0;
         logger.info(`Turning Off DbListners`);
          if(this.listners && this.listners.length){                  
             this.listners.forEach(dbRef => {

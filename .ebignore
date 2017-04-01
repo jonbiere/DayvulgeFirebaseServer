@@ -2,10 +2,12 @@
 .tscache
 .baseDir.ts
 node_modules
+*.map
 
 # EB Ignore Only
 /src
 /views
+
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
